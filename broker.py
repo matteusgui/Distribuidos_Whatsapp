@@ -3,16 +3,17 @@ import zmq.asyncio
 import asyncio
 from aioconsole import ainput
 
-async def input_comando(lista: list):
-    while lista[0] != "END":
-        lista[0] = await ainput("Coloque a palavra 'END' se quiser encerrar o programa: ")
-    exit()
+async def input_comando(task):
+    valor = ""
+    while valor != "END":
+        valor = await ainput("Coloque a palavra 'END' se quiser encerrar o programa: ")
+    task.cancel()
+    return
 
-async def zmqManager(subscriber: zmq.asyncio.Socket, publisher: zmq.asyncio.Socket, lista: list):
-    while lista[0] != "END":
+async def zmqManager(subscriber: zmq.asyncio.Socket, publisher: zmq.asyncio.Socket):
+    while True:
         msg = await subscriber.recv_multipart()
         await publisher.send_multipart(msg)
-    return
 
 async def main():
     ctx = zmq.asyncio.Context()
@@ -24,12 +25,12 @@ async def main():
     publisher = ctx.socket(zmq.XPUB)
     publisher.bind("tcp://*:1102")
 
-    comando = ["KEEP"]
     # Enquanto o servidor estiver ativo recebe as mensagens em partes e as envia para quem estiver ouvindo ao tópico
-    while True:
-        tasks = [input_comando(comando), zmqManager(subscriber, publisher, comando)]
-        await asyncio.gather(*tasks)
-        # Problema de não finalizar as conexões iniciadas, necessidade de um comando que o faça corretamente, para reutilização das portas
+    tasks = [asyncio.create_task(zmqManager(subscriber, publisher))]
+    tasks.append(asyncio.create_task(input_comando(tasks[0])))
+    await asyncio.wait(tasks)
+    return
+    # Problema de não finalizar as conexões iniciadas, necessidade de um comando que o faça corretamente, para reutilização das portas
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
