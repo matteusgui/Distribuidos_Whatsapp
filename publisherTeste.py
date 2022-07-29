@@ -7,7 +7,7 @@ def main():
 
     pub = ctx.socket(zmq.PUB)
     pub.connect("tcp://localhost:5556")
-    msg = "BANANA mensagem"
+    msg = "MACA mensagem"
     while True:
         pub.send_string(msg)
         print(msg)
