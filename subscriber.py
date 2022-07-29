@@ -18,7 +18,7 @@ def create_message(args):
 
 	"subscriber.send(TOPIC+ " " + MESSAGE "
 	print(args[0])
-	args[3].send_string(args[1] + +f"{args[4]} disse:" +args[2])
+	args[3].send_string(args[1] + " " + f"{args[4]} disse:" +args[2])
 
 	print("create_message executou")
 	return None
