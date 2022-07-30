@@ -17,7 +17,6 @@ warnings.filterwarnings("ignore")
 def create_message(args):
 
 	"subscriber.send(TOPIC+ " " + MESSAGE "
-	print(args[0])
 	args[3].send_string(args[1] + " " + f"{args[4]} disse:" +args[2])
 
 	print("create_message executou")
@@ -122,15 +121,17 @@ def validar_comando(comando: string):
 	return array if valido else None
 		
 
-def receptor(subscriber):
-	while True:
+def receptor(subscriber, control):
+	while control.is_set():
 		msg = subscriber.recv_string()
 		print(msg)
+	return
 	
 
 
 
-def console(nome, publisher, subscriber, receptor):
+def console(nome, publisher, subscriber, receptor, control):
+	subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
 	
 	#Dicionario comando-funcao
 	str_fun_dic = {
@@ -151,14 +152,15 @@ def console(nome, publisher, subscriber, receptor):
 			func, modo = str_fun_dic[resposta[0]]
 			estado = func(resposta + [modo] + [nome])
 	
-	receptor._stop()
+	control.clear()
+	publisher.send_string("")
 	return
 	
 def main():
 	
 	nome = ''
 	while nome == '':
-		nome = input("Insira seu nome")
+		nome = input("Insira seu nome: ")
 		nome = nome.strip()
 	
 
@@ -171,11 +173,12 @@ def main():
 	subscriber.connect(p2)
 
 	threads = []
-
-	Recptor = threading.Thread(target=receptor, args=(subscriber,))
+	control = threading.Event()
+	control.set()
+	Recptor = threading.Thread(target=receptor, args=(subscriber,control))
 	threads.append(Recptor)
 	Recptor.start()
-	Cnsole = threading.Thread(target=console, args=(nome, publisher, subscriber, Recptor))
+	Cnsole = threading.Thread(target=console, args=(nome, publisher, subscriber, Recptor,control))
 	threads.append(Cnsole)
 	Cnsole.start()
 	for i in threads:
@@ -183,9 +186,7 @@ def main():
 
 
 if __name__ == "__main__":
-	loop = asyncio.get_event_loop_policy().new_event_loop()
-	loop.run_until_complete(main())
-	loop.close()
+	main()
 	#conectar ao servidor
 	#definir modo
 	#
