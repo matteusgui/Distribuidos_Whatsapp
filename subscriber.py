@@ -158,14 +158,13 @@ def console(nome, publisher, subscriber, receptor, control):
 def main():
 	
 	nome = ''
-	ip = input("Insira o IP da máquina a se comunicar: ")
 	while nome == '':
 		nome = input("Insira seu nome: ")
 		nome = nome.strip()
 	
 
-	p1 = "tcp://{}:7000".format(ip)
-	p2 = "tcp://{}:7001".format(ip)
+	p1 = "tcp://localhost:5556"
+	p2 = "tcp://localhost:5559"
 	ctx = zmq.Context()
 	publisher = ctx.socket(zmq.PUB)
 	subscriber = ctx.socket(zmq.SUB)
