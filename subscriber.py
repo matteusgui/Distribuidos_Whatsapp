@@ -19,23 +19,19 @@ def create_message(args):
 	"subscriber.send(TOPIC+ " " + MESSAGE "
 	args[3].send_string(args[1] + " " + f"{args[4]} disse:" +args[2])
 
-	print("create_message executou")
 	return None
 	
 def subscribe(args):
 
 	args[2].setsockopt_string(zmq.SUBSCRIBE, args[1])
-	print("subscribe executou")
 	return None
 
 def unsubscribe(args):
 	args[2].setsockopt_string(zmq.UNSUBSCRIBE, args[1])
-	print("unsubscribe executou")
 	return None
 
 #Apenas retorna o estado "Exit" para que o console seja encerrado
 def exit(args):
-	print("exit executou")
 	return "Exit"
 
 
@@ -124,14 +120,17 @@ def validar_comando(comando: string):
 def receptor(subscriber, control):
 	while control.is_set():
 		msg = subscriber.recv_string()
-		print(msg)
+		if control.is_set():
+			print(msg)
 	return
 	
 
 
 
 def console(nome, publisher, subscriber, receptor, control):
-	subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
+	topic_unico = nome + bytes.fromhex('D2AF').decode('utf-8')
+	topic_unico.upper()
+	subscriber.setsockopt_string(zmq.SUBSCRIBE, topic_unico)
 	
 	#Dicionario comando-funcao
 	str_fun_dic = {
@@ -146,14 +145,14 @@ def console(nome, publisher, subscriber, receptor, control):
 	#O comando Exit eh o unico que retorna um estado diferente de "Stay", saindo do loop
 	estado = "Stay"
 	while(estado != "Exit"):
-		entrada = input("Insira comando: ")
+		entrada = input()
 		resposta = validar_comando(entrada)#Retorna None se o comando for invalido
 		if resposta != None:
 			func, modo = str_fun_dic[resposta[0]]
 			estado = func(resposta + [modo] + [nome])
 	
 	control.clear()
-	publisher.send_string("")
+	publisher.send_string(topic_unico + " " + "")
 	return
 	
 def main():
