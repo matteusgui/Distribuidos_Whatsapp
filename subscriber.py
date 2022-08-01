@@ -2,9 +2,6 @@ import string
 import threading
 import zmq
 import zmq.asyncio
-import asyncio
-import inspect
-import time
 from aioconsole import ainput
 import warnings
 

@@ -1,7 +1,5 @@
 import zmq
 import zmq.asyncio
-import asyncio
-from aioconsole import ainput, aprint
 
 ctx = zmq.Context.instance()
 # Abre a porta 1101 para pub de modo local
