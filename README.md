@@ -30,7 +30,11 @@ E, finalmente, para que seja possível encerrar o programa, deve-se utilizar o c
 
 Caso qualquer um dos comandos acima receba a quantidade errada de argumentos, ou seja digitado com a grafia errada, lembrando que tais comandos são case sensitive, ou seja, receber letras maiúsculas, o usuário receberá uma mensagem de erro.
 
-Para rodar o programa devemos abrir no mínimo 3 terminais, 2 para clientes e 1 para o broker, pois como será melhor detalhado abaixo, o grupo não foi capaz de fazer a comunicação entre 2 ou mais máquinas.
+Para rodar o programa devemos abrir no mínimo 3 terminais, 2 para clientes(client.py) e 1 para o broker(broker.py), pois como será melhor detalhado abaixo, o grupo não foi capaz de fazer a comunicação entre 2 ou mais máquinas.
+
+Devemos então rodar nos terminais os comandos:
+* python3 client.py para o cliente
+* python3 broker.py para o broker
 
 # Resultado
 

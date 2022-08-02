@@ -2,7 +2,6 @@ import string
 import threading
 import zmq
 import zmq.asyncio
-from aioconsole import ainput
 import warnings
 
 warnings.filterwarnings("ignore")
