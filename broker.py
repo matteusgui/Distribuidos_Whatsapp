@@ -18,4 +18,3 @@ zmq.proxy(subscriber, publisher)
 subscriber.close()
 publisher.close()
 ctx.term()
-# Problema de não finalizar as conexões iniciadas, necessidade de um comando que o faça corretamente, para reutilização das portas
